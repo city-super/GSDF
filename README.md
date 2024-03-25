@@ -25,7 +25,7 @@ class="center">
 Our dual-branch framework comprises a GS-branch dedicated to rendering and an SDF-branch focusing on learning neural surfaces. Our design effectively preserves the superiority of rendering with Gaussian primitives in terms of efficiency and fidelity, and also more accurately approximates scene surfaces from an SDF field adapted from NeuS. Concretely, (1) we leverage the efficiency and flexibility advantages of the GS-branch, to render depth maps and guide the ray sampling process of the SDF-branch. For each depth position, we query the SDF-branch to obtain its absolute SDF value |s|, and uniformly sample points within 2k|s| (e.g. k = 4). (2) The predicted SDF values from the SDF-branch are in turn used to guide the density control of the GS-branch to grow Gaussian primitives in near-surface regions and prune the ones that are far-away. (3) We further enforce mutual geometry consistency by comparing the depth and normal maps from each branch to encourage more coherent physical alignment between Gaussian primitives and surfaces.
 
 
-# The code is coming soon.
+### The code is coming soon.
 
 
 
