@@ -1,6 +1,6 @@
 # GSDF: 3DGS Meets SDF for Improved Rendering and Reconstruction
 
-[Mulin Yu*](https://scholar.google.com/citations?user=w0Od3hQAAAAJ), [Tao Lu*](https://github.com/inspirelt), [Linning Xu](https://eveneveno.github.io/lnxu), [Lihan Jiang](https://jianglh-whu.github.io/), [Yuanbo Xiangli](https://kam1107.github.io/)[✉], [Bo Dai](https://daibo.info/) <br />
+[Mulin Yu*](https://scholar.google.com/citations?user=w0Od3hQAAAAJ), [Tao Lu*](https://github.com/inspirelt), [Linning Xu](https://eveneveno.github.io/lnxu), [Lihan Jiang](https://jianglh-whu.github.io/), [Yuanbo Xiangli](https://kam1107.github.io/)✉, [Bo Dai](https://daibo.info/) <br />
 
 
 [[`Project Page`](https://city-super.github.io/GSDF/)][[`arxiv`](https://arxiv.org/abs/2312.00109)]
