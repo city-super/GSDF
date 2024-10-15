@@ -1,0 +1,22 @@
+*.pyc
+.vscode
+*.bak
+*.jpg
+# *.png
+*.ply
+data
+build
+*__pycache__*
+*.html
+instant_nsr/utils/kernel_point
+gaussian_splatting/SIBR_viewers
+# gaussian_splatting/submodules
+exp
+output
+runs
+ours_rendering
+*.zip
+useless
+exp_old_ras
+
+

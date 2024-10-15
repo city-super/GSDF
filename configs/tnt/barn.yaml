@@ -1,0 +1,227 @@
+name: barn
+tag: "gs_barn_curv_1_pre_15k_0.01"
+seed: 42
+
+dataset:
+  name: colmap
+  root_dir: ./data/tnt/Barn
+  img_downscale: 1 # (resolution) specify training image size by either img_wh or img_downscale
+  up_est_method: ground # if true, use estimated ground plane normal direction as up direction
+  center_est_method: point
+  n_test_traj_steps: 2
+  apply_mask: false
+  load_data_on_gpu: true
+  # neuralangelo_scale: 3.1436941869432533
+  # neuralangelo_center: [-0.23212015137539144,-0.15154983037509506,0.41666264440346557]
+  neuralangelo_scale: 0
+  neuralangelo_center: [0,0,0]
+
+model:
+  name: neus
+  radius: 3.1
+  using_pretrain: false
+  using_pretrain_path: output/barn
+  num_samples_per_ray: 1024
+  gs_sampling: true
+  num_samples_equispaced: 64
+  num_samples_full: 1024
+
+  # num_samples_importance: 16
+  train_num_rays: 256
+  max_train_num_rays: 8192
+  grid_prune: true
+  grid_prune_occ_thre: 0.001
+  dynamic_ray_sampling: true
+  batch_image_sampling: false
+  randomized: true
+  ray_chunk: 1024
+  cos_anneal_end: 30000
+  learned_background: true
+  background_color: random
+  if_gaussian: true
+  if_check_gaussian_opacity: false
+  if_check_gaussian_rgb: false
+  variance:
+    init_val: 0.3
+    modulate: false
+  geometry:
+    name: volume-sdf-sg
+    radius: ${model.radius}
+    feature_dim: 64
+    # grad_type: finite_difference
+    grad_type: analytic
+
+    finite_difference_eps: progressive
+    custom_smoothing: true
+    isosurface:
+      method: mc
+      resolution: 1024
+      chunk: 2097152
+      threshold: 0.
+    xyz_encoding_config:
+      otype: ProgressiveBandHashGrid
+      n_levels: 16
+      n_features_per_level: 4
+      log2_hashmap_size: 21
+      base_resolution: 32
+      per_level_scale: 1.3195079107728942
+      # per_level_scale: 1.381912879967
+      include_xyz: true
+      start_level: 8
+      start_step: 5000
+      update_steps: 2000
+    mlp_network_config:
+      otype: VanillaMLP
+      activation: Softplus
+      output_activation: none
+      n_neurons: 128
+      n_hidden_layers: 1
+      sphere_init: true
+      sphere_init_radius: 0.8
+      weight_norm: true
+  texture:
+    name: volume-radiance
+    input_feature_dim: ${add:${model.geometry.feature_dim},3} # surface normal as additional input
+    dir_encoding_config:
+      otype: SphericalHarmonics
+      degree: 4
+    mlp_network_config:
+      otype: VanillaMLP
+      activation: ReLU
+      output_activation: none
+      n_neurons: 128
+      n_hidden_layers: 2
+      weight_norm: true
+    color_activation: sigmoid
+  # background model configurations
+  num_samples_per_ray_bg: 256
+  geometry_bg:
+    name: volume-density
+    radius: ${model.radius}
+    feature_dim: 8
+    density_activation: trunc_exp
+    density_bias: -1
+    isosurface: null
+    xyz_encoding_config:
+      otype: HashGrid
+      n_levels: 16
+      n_features_per_level: 2
+      log2_hashmap_size: 19
+      base_resolution: 32
+      per_level_scale: 1.3195079107728942
+    mlp_network_config:
+      otype: VanillaMLP
+      activation: ReLU
+      output_activation: none
+      n_neurons: 64
+      n_hidden_layers: 1
+  texture_bg:
+    name: volume-radiance
+    input_feature_dim: ${model.geometry_bg.feature_dim}
+    dir_encoding_config:
+      otype: SphericalHarmonics
+      degree: 4
+    mlp_network_config:
+      otype: VanillaMLP
+      activation: ReLU
+      output_activation: none
+      n_neurons: 64
+      n_hidden_layers: 2
+    color_activation: sigmoid
+
+system:
+  name: neus-system
+  constant_steps: 2000
+  step1: 20000
+  step2: 25000
+  loss:
+    lambda_rgb_mse: 0.
+    lambda_rgb_l1: 1.
+    lambda_mask: 0.0
+    lambda_eikonal: 0.1
+    # lambda_curvature: [0,0.0,0.0005,1000,0.0005]
+    lambda_curvature: 0.0
+    lambda_sparsity: 0.0
+    lambda_distortion: 0.0
+    lambda_distortion_bg: 0.0
+    lambda_opaque: 0.0
+    lambda_depth: 0.0
+    sparsity_scale: 0.
+    lambda_smoothing: [0,0.0,1,2000,0.05]
+    # lambda_smoothing: 0.0
+    depth_w: 0.5    # lamda_d in Eq.7
+    normal_w: 0.01  # lamda_n in Eq.8
+  growing_weight: 0.00015  # w_g in Eq.3
+
+
+  optimizer:
+    name: AdamW
+    args:
+      lr: 0.01
+      betas: [0.9, 0.99]
+      eps: 1.e-15
+      weight_decay: 1e-2
+    params:
+      geometry:
+        lr: 0.01
+        weight_decay: 1e-2
+      texture:
+        lr: 0.01
+        weight_decay: 1e-2
+      geometry_bg:
+        lr: 0.01
+        weight_decay: 1e-2
+      texture_bg:
+        lr: 0.01
+        weight_decay: 1e-2
+      variance:
+        lr: 0.001
+  
+  scheduler:
+    name: SequentialLR
+    interval: step
+    milestones:
+      - ${system.constant_steps}
+      - ${system.step1}
+      - ${system.step2}
+    schedulers:
+      - name: ConstantLR
+        args:
+          factor: 1.0
+          total_iters: ${system.constant_steps}
+      # - name: ExponentialLR
+      #   args:
+      #     gamma: ${calc_exp_lr_decay_rate:0.4,${sub:${trainer.max_steps},${system.constant_steps}}}
+      - name: ConstantLR
+        args:
+          factor: 0.1
+          total_iters: ${sub:${system.step1},${system.constant_steps}}
+          last_epoch: ${system.constant_steps}
+      - name: ConstantLR
+        args:
+          factor: 0.01
+          total_iters: ${sub:${system.step2},${system.step1}}
+          last_epoch: ${system.step1}
+      - name: ConstantLR
+        args:
+          factor: 0.001
+          total_iters: ${sub:${trainer.max_steps},${system.step2}}
+          last_epoch: ${system.step2}
+
+checkpoint:
+  save_top_k: -1
+  every_n_train_steps: ${trainer.max_steps}
+
+export:
+  chunk_size: 2097152
+  export_vertex_color: False
+
+trainer:
+  max_steps: 30000
+  log_every_n_steps: 100
+  num_sanity_val_steps: 0
+  val_check_interval: 15000
+  limit_train_batches: 1.0
+  limit_val_batches: 1
+  enable_progress_bar: true
+  precision: 32

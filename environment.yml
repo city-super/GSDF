@@ -1,0 +1,34 @@
+name: gsdf
+channels:
+  - pytorch
+  - pyg
+  - conda-forge
+  - defaults
+dependencies:
+  - cudatoolkit=11.6
+  - plyfile=0.8.1
+  - python=3.7.13
+  - pip=22.3.1
+  - pytorch=1.12.1
+  - torchaudio=0.12.1
+  - torchvision=0.13.1
+  - pytorch-scatter
+  - tqdm
+  - pip:
+    - einops
+    - wandb
+    - gaussian_splatting/submodules/diff-gaussian-rasterization
+    - gaussian_splatting/submodules/simple-knn
+    - pytorch-lightning==1.9.5
+    - omegaconf==2.2.3
+    - nerfacc==0.3.3
+    - matplotlib
+    - opencv-python
+    - imageio
+    - imageio-ffmpeg
+    - scipy
+    - einops
+    - PyMCubes==0.1.4
+    - pyransac3d
+    - torch_efficient_distloss
+    - tensorboard

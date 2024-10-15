@@ -1,0 +1,6 @@
+[submodule "gaussian_splatting/submodules/diff-gaussian-rasterization/third_party/glm"]
+	path = gaussian_splatting/submodules/diff-gaussian-rasterization/third_party/glm
+	url = https://github.com/g-truc/glm.git
+[submodule "gaussian_splatting/submodules/simple-knn"]
+	path = gaussian_splatting/submodules/simple-knn
+	url = https://gitlab.inria.fr/bkerbl/simple-knn.git
