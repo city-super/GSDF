@@ -1,10 +1,10 @@
 name: db_drjohnson
-tag: "gs_barn_curv_1_pre_15k_0.01"
+tag: "test"
 seed: 42
 
 dataset:
   name: colmap
-  root_dir: ./data/db/drjohnson
+  root_dir: ./data/drjohnson
   img_downscale: 1 # specify training image size by either img_wh or img_downscale
   up_est_method: ground # if true, use estimated ground plane normal direction as up direction
   center_est_method: point
@@ -24,7 +24,6 @@ model:
   # num_samples_hierarchy: 4  # for raw NeuS sampling
   num_samples_equispaced: 64
   num_samples_full: 1024
-
   # num_samples_importance: 16
   train_num_rays: 256
   max_train_num_rays: 8192
@@ -149,6 +148,9 @@ system:
     sparsity_scale: 0.
     lambda_smoothing: [0,0.0,1,2000,0.04]
     # lambda_smoothing: 0.0
+    depth_w: 0.5    # lamda_d in Eq.7
+    normal_w: 0.01  # lamda_n in Eq.8
+  growing_weight: 0.00015  # w_g in Eq.3
 
   optimizer:
     name: AdamW

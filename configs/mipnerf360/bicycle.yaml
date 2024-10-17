@@ -141,6 +141,9 @@ system:
     lambda_depth: 0.0
     sparsity_scale: 0.
     lambda_smoothing: [0,0.0,1,2000,0.04]
+    depth_w: 0.5    # lamda_d in Eq.7
+    normal_w: 0.01  # lamda_n in Eq.8
+  growing_weight: 0.0002  # w_g in Eq.3
   optimizer:
     name: AdamW
     args:
