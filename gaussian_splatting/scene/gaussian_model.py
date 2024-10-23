@@ -117,7 +117,7 @@ class GaussianModel:
                          "output_activation": "None",
                          "n_neurons": feat_dim,
                          "n_hidden_layers": 1}
-            self.mlp_cov = tcnn.Network(n_input_dims=feat_dim+3+1,
+            self.mlp_cov = tcnn.Network(n_input_dims=feat_dim+3,
                                      n_output_dims=7*self.n_offsets,
                                      network_config=mlp_cov_config)
             
@@ -126,7 +126,7 @@ class GaussianModel:
                          "output_activation": "Sigmoid",
                          "n_neurons": feat_dim,
                          "n_hidden_layers": 1}
-            self.mlp_color = tcnn.Network(n_input_dims=feat_dim+3+1,
+            self.mlp_color = tcnn.Network(n_input_dims=feat_dim+3,
                                      n_output_dims=3*self.n_offsets,
                                      network_config=mlp_color_config)
             

@@ -764,12 +764,12 @@ class NeuSSystem(BaseSystem):
     
     def export(self):
         mesh = self.model.export(self.config.export)
-        if self.config.model.if_gaussian:
-            tc = torch.tensor(self.scene.center).reshape(3)
-            pts = mesh['v_pos']
-            pts = pts * self.scene.scale
-            pts += tc
-            mesh['v_pos'] = pts
+        # if self.config.model.if_gaussian:
+        #     tc = torch.tensor(self.scene.center).reshape(3)
+        #     pts = mesh['v_pos']
+        #     pts = pts * self.scene.scale
+        #     pts += tc
+        #     mesh['v_pos'] = pts
       
         self.save_mesh(
             f"it{self.global_step}-{self.config.model.geometry.isosurface.method}{self.config.model.geometry.isosurface.resolution}.ply",
