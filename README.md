@@ -33,7 +33,11 @@ conda env create --file environment.yml
 conda activate gsdf
 ```
 
-### Optional
+### Speed up
+
+We are working to accelerate the training speed and will release the update soon.
+
+<!-- ### Optional
 
 To accelerate using [tiny-cuda-nn](https://github.com/NVlabs/tiny-cuda-nn.git), install it with 
 
@@ -47,7 +51,7 @@ and set
 self.use_tcnn = True # default is False for a higher quality
 ```
 
-in ```gaussian_splatting/arguments/__init__.py```.
+in ```gaussian_splatting/arguments/__init__.py```. -->
 
 ## Data
 
